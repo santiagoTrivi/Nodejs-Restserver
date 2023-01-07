@@ -1,13 +1,17 @@
 const express = require('express');
 const hbs = require('hbs');
+const {dbconnection} = require('../db/config');
 
 
 class Server{
 
-    constructor(){
+    constructor (){
         this.app = express();
         this.port = process.env.PORT;
         this.userRouters = '/api/users'; // main endpoint the set the routes for each methods (get, post, patch, put and delete) which is used in the middlaware
+
+        // database connection
+        this.mysqlConnection();
 
         // Middlewares
         this.middelawares();
@@ -15,6 +19,12 @@ class Server{
         // Rutas de mi app
         this.routes();
     }
+
+    // method to create the connection to the database in mysql
+    async mysqlConnection(){
+        await dbconnection();
+    }
+
 
     middelawares(){
 
