@@ -1,13 +1,15 @@
+
+create database `sql_NodejsShop`;
 use sql_NodejsShop;
 create table `users`(
     `userID` int not null auto_increment,
     `name` varchar(20) not null,
     `email` varchar(255) not null,
-    `password` varchar(32) not null,
-    `google` boolean,
+    `password` varchar(300) not null,
+    `google` boolean default false,
     `role` varchar(50),
     `img` varchar(500),
-    `status` boolean,
+    `status` boolean default true,
     UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE,
 	UNIQUE INDEX `password_UNIQUE` (`password` ASC) VISIBLE,
     primary key(`userID`));
