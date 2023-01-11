@@ -1,37 +1,46 @@
 
-create database `sql_NodejsShop`;
-use sql_NodejsShop;
-create table `users`(
-    `userID` int not null auto_increment,
-    `name` varchar(20) not null,
-    `email` varchar(255) not null,
-    `password` varchar(300) not null,
-    `google` boolean default false,
-    `role` varchar(50),
-    `img` varchar(500),
-    `status` boolean default true,
-    UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE,
-	UNIQUE INDEX `password_UNIQUE` (`password` ASC) VISIBLE,
-    primary key(`userID`));
-    
-create table `categories`(
-	`categoryID` int not null auto_increment,
-	`categoryName` varchar(50),
-	`userID` int,
-	constraint `userID` foreign key(`userID`) references `users`(`userID`),
-    primary key(`categoryID`)
+CREATE DATABASE `sql_NodejsShop`;
+USE sql_NodejsShop;
+
+CREATE TABLE `rols`(
+    `rolID` INT NOT NULL auto_increment,
+    `rol` VARCHAR(50) NOT NULL,
+    UNIQUE INDEX `rol_uniquex` (`rol` ASC) VISIBLE,
+    PRIMARY KEY(`rolID`)
 );
 
-create table `products`(
-	`productID` int not null auto_increment,
-	`producName` varchar(50),
-    `unitPrice` int,
-    `available` boolean,
-	`user_ID` int,
-    `categoryID` int,
-	constraint `user_ID` foreign key(`user_ID`) references `users`(`userID`),
-    constraint `categoryID` foreign key(`categoryID`) references `categories`(`categoryID`),
-    primary key(`productID`)
+CREATE TABLE `users`(
+    `userID` INT NOT NULL auto_increment,
+    `name` VARCHAR(50) NOT NULL,
+    `email` VARCHAR(255) NOT NULL,
+    `password` VARCHAR(300) NOT NULL,
+    `rol_id` INT,
+    `google` BOOLEAN DEFAULT false,
+    `img` VARCHAR(500),
+    `status` BOOLEAN DEFAULT true,
+    UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE,
+	UNIQUE INDEX `password_UNIQUE` (`password` ASC) VISIBLE,
+    CONSTRAINT `rol_id` FOREIGN KEY (`rol_id`) REFERENCES `rols`(`rolID`),
+    PRIMARY KEY(`userID`));
+    
+CREATE TABLE `categories`(
+	`categoryID` INT NOT NULL auto_increment,
+	`categoryName` VARCHAR(50),
+	`userID` INT,
+	CONSTRAINT `userID` FOREIGN KEY (`userID`) REFERENCES `users`(`userID`),
+    PRIMARY KEY(`categoryID`)
+);
+
+CREATE TABLE `products`(
+	`productID` INT NOT NULL auto_increment,
+	`producName` VARCHAR(50),
+    `unitPrice` INT,
+    `available` BOOLEAN,
+	`user_ID` INT,
+    `categoryID` INT,
+	CONSTRAINT `user_ID` FOREIGN KEY (`user_ID`) REFERENCES `users`(`userID`),
+    CONSTRAINT `categoryID` FOREIGN KEY (`categoryID`) REFERENCES `categories`(`categoryID`),
+    PRIMARY KEY(`productID`)
 );
 
 show tables;

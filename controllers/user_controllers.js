@@ -1,7 +1,6 @@
 const {response, request} = require('express');
 const connected = require('../db/sql_connection');
 const bcryptjs = require('bcryptjs');
-const {validationResult} = require('express-validator');
 //const {dbconnection} = require('../db/config');
 //const bodyparser = require('body-parser');
 
@@ -18,24 +17,39 @@ const userGet = (req = request, res = response)=>{
 }
 
 const userPost = (req = request, res = response)=>{
-    const obj = req.body;
-    const output = validationResult(req);
-    if(!output.isEmpty()){
-        res.status(400).json(output);
-    }
-    const salt = bcryptjs.genSaltSync(10);
-    const encrypted = bcryptjs.hashSync(obj.password, salt);
+    const {name, email, password, rol} = req.body;
     
-    connected.query('INSERT INTO users (name, email, password) VALUES (?,?,?)', [obj.name, obj.email, encrypted], (err, results) => {
+    const salt = bcryptjs.genSaltSync(10);
+    const encrypted = bcryptjs.hashSync(password, salt);
+
+    connected.query('SELECT * FROM users WHERE email=?', email, (err, results)=> {
+
+        if(results){
+            res.json({error: "the email is already registered"});
+            return;
+        }
+        
+        if(err) throw err;
+        /*
+        results.forEach((result)=>{
+            res.json({result});
+        });
+        */
+    });
+
+    /*
+
+    connected.query('INSERT INTO users (name, email, password) VALUES (?,?,?)', [name, email, encrypted], (err, results) => {
         if(err){
-            console.log(err);
+            //console.log(err);
             res.status(400).json({success: false, message: 'query error', error: err});
             return;
         }
 
         res.json({success: true, message: 'user created', process: results})
     });
-  
+
+    */
     
     
 }
