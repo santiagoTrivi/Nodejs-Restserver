@@ -1,61 +1,46 @@
 const {response, request} = require('express');
-const connected = require('../db/sql_connection');
 const bcryptjs = require('bcryptjs');
-//const {dbconnection} = require('../db/config');
+const {User, Rol} = require('../models/userData');
 //const bodyparser = require('body-parser');
 
 
-const userGet = (req = request, res = response)=>{
-    const {q, nombre, apikey} = req.query;
-    res.json({
-        msj: "get api - controller",
-        q,
-        nombre,
-        apikey
-    });
+const userGet = async (req = request, res = response)=>{
+    const {limit = 5} = req.query;
+    const users = await User.findAll();
+    const total = await User.count();
+    res.json( {total, users});
     //res.render('index');
 }
 
-const userPost = (req = request, res = response)=>{
-    const {name, email, password, rol} = req.body;
-    
-    const salt = bcryptjs.genSaltSync(10);
-    const encrypted = bcryptjs.hashSync(password, salt);
-
-    connected.query('SELECT * FROM users WHERE email=?', email, (err, results)=> {
-
-        if(results){
-            res.json({error: "the email is already registered"});
-            return;
-        }
-        
-        if(err) throw err;
-        /*
-        results.forEach((result)=>{
-            res.json({result});
-        });
-        */
-    });
-
-    /*
-
-    connected.query('INSERT INTO users (name, email, password) VALUES (?,?,?)', [name, email, encrypted], (err, results) => {
-        if(err){
-            //console.log(err);
-            res.status(400).json({success: false, message: 'query error', error: err});
-            return;
-        }
-
-        res.json({success: true, message: 'user created', process: results})
-    });
-
-    */
-    
-    
+const userGetBYId = async (req = request, res = response)=>{
+    const id = req.params.id;
+    const user = await User.findByPk( id );
+    res.json({ user });
+    //res.render('index');
 }
 
-const userPut = (req = request, res = response)=>{
+const userPost = async (req = request, res = response)=>{
+    let {name, email, password, rol} = req.body;
+    const rl = await Rol.findOne({ where: { rol} });
+    const rol_id = rl.id;
+    
+    const salt = bcryptjs.genSaltSync(10);
+    password = bcryptjs.hashSync(password, salt);
+  
+    try {
+        const user = new User({name, email, password, rol_id});
+        await user.save();
+        res.json({user});
+    } catch (error) {
+        res.status(500).json({error});
+    }
+
+     
+}
+
+const userPut = async (req = request, res = response)=>{
     const id = req.params.id;
+
     res.json({
         msj: "put api - controller",
         id
@@ -77,6 +62,7 @@ const userDelete = (req = request, res = response)=>{
 
 module.exports = {
     userGet,
+    userGetBYId,
     userPost,
     userPut,
     userPatch,
