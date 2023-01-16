@@ -6,7 +6,11 @@ const {User, Rol} = require('../models/userData');
 
 const userGet = async (req = request, res = response)=>{
     const {limit = 5} = req.query;
-    const users = await User.findAll();
+    const users = await User.findAll({
+        where: {
+          status: 1
+        }
+      });
     const total = await User.count();
     res.json( {total, users});
     //res.render('index');
@@ -40,11 +44,34 @@ const userPost = async (req = request, res = response)=>{
 
 const userPut = async (req = request, res = response)=>{
     const id = req.params.id;
+    let { password, rol} = req.body;
+    
+    try {
+        const user = await User.findByPk(id);
+    
 
-    res.json({
-        msj: "put api - controller",
-        id
-    });
+        if(password){
+            const salt = bcryptjs.genSaltSync(10);
+            user.password = bcryptjs.hashSync(password, salt);
+        }
+
+        if(rol){
+            const rl = await Rol.findOne({ where: { rol} });
+            user.rol_id = rl.id;
+
+        }
+        user.save();
+
+
+        res.json({
+            msj: "put api - controller",
+            user
+        });
+
+    } catch (error) {
+        res.status(400).json({error: "user not found"});
+    }
+    
 }
 
 const userPatch = (req = request, res = response)=>{
@@ -54,10 +81,22 @@ const userPatch = (req = request, res = response)=>{
 }
 
 
-const userDelete = (req = request, res = response)=>{
-    res.json({
-        msj: "delete api - controller"
-    });
+const userDelete = async (req = request, res = response)=>{
+    const id = req.params.id;
+    try {
+        const user = await User.findByPk(id);
+    
+        user.set({status: 0});
+        user.save();
+
+        res.json({
+            msj: "the user has been deleted successfully",
+            user
+        });
+        
+    } catch (error) {
+        res.status(400).json({error: "user not found"});
+    }
 }
 
 module.exports = {

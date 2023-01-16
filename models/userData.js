@@ -15,6 +15,9 @@ const User = database.define('User', {
     rol_id: {
         type: DataTypes.INTEGER
     },
+    status: {
+        type: DataTypes.TINYINT
+    }
 });
 
 
