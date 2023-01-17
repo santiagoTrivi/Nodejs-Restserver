@@ -9,7 +9,7 @@ class Server{
         this.app = express();
         this.port = process.env.PORT;
         this.userRouters = '/api/users'; // main endpoint that sets the routes for each methods user (get, post, patch, put and delete) which is used in the middlaware
-        this.login = 'api/auth'; // second endpoint that sets the login function in the api
+        this.authPath = '/api/auth'; // second endpoint that sets the login function in the api
 
         // database connection
         this.Connection();
@@ -51,7 +51,7 @@ class Server{
 
         // middelaware to requess the routes created in the folder routes
         this.app.use(this.userRouters, require('../routes/user_routes'));
-        this.app.use(this.login, require('../routes/auth_routes'));
+        this.app.use(this.authPath, require('../routes/auth_routes'));
 
     }
 

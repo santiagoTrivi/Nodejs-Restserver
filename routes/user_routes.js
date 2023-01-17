@@ -2,6 +2,8 @@ const {Router} = require('express');
 const {userGet, userGetBYId, userPost, userPut, userPatch, userDelete} = require('../controllers/user_controllers');
 const {check} = require('express-validator');
 const {fieldCheck, rolValid, emailvalid} = require('../middlewares/check-fields');
+const { validationjwt} = require('../middlewares/validationjwt');
+const { validationRolJwt } = require('../middlewares/validationRolJwt');
 
 
 const router = Router();
@@ -24,6 +26,6 @@ router.post('/', [check('email', 'invalid email').isEmail(),
 
 router.patch('/', userPatch)
 
-router.delete('/:id', userDelete);
+router.delete('/:id', [validationjwt, validationRolJwt] , userDelete);
 
 module.exports = router;

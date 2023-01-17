@@ -22,6 +22,8 @@ const User = database.define('User', {
 
 
 
+
+
 const Rol = database.define('rol', {
     
     rol: {

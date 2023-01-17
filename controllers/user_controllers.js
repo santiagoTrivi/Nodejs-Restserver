@@ -6,12 +6,8 @@ const {User, Rol} = require('../models/userData');
 
 const userGet = async (req = request, res = response)=>{
     const {limit = 5} = req.query;
-    const users = await User.findAll({
-        where: {
-          status: 1
-        }
-      });
-    const total = await User.count();
+    const users = await User.findAll({ where: { status: 1 } });
+    const total = await User.count({ where: { status: 1 } });
     res.json( {total, users});
     //res.render('index');
 }
@@ -83,6 +79,8 @@ const userPatch = (req = request, res = response)=>{
 
 const userDelete = async (req = request, res = response)=>{
     const id = req.params.id;
+    const uid = req.uid;
+    const authnticatedUser = req.authUser;
     try {
         const user = await User.findByPk(id);
     
@@ -91,7 +89,8 @@ const userDelete = async (req = request, res = response)=>{
 
         res.json({
             msj: "the user has been deleted successfully",
-            user
+            user,
+            authnticatedUser
         });
         
     } catch (error) {
