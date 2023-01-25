@@ -5,7 +5,7 @@ const { User } = require("../models/userData");
 
 const validationjwt= async (req = request, res = response, next) => {
 
-    const token = req.header('authentication');
+    const token = req.header('Authorization');
     if(!token){
         return res.status(401).json({error: "no authentication"});
     }
@@ -14,16 +14,18 @@ const validationjwt= async (req = request, res = response, next) => {
 
         const { uid } = await jwt.verify(token, process.env.SECRETKEY);
         const authUser = await User.findByPk(uid);
-
         // validate if the authUser is null or not using return
-        if(!authUser){
+        
+        if(!authUser.dataValues){
             return res.status(401).json({errror: "user not fount"});
         }
 
         // validate if the authUser status is false or not using return 
-        if(!authUser.status){
-            return res.status(401).json({error: "user not valid"});
+        
+        if(!authUser.dataValues.status){
+            return res.status(401).json({error: "user not valid, try later"});
         }
+        
 
         req.uid = uid;
         req.authUser = authUser;
@@ -33,6 +35,7 @@ const validationjwt= async (req = request, res = response, next) => {
         res.status(401).json({error: "token not valid"});
     }
 
+    next();
 
 };
 

@@ -2,6 +2,7 @@ const {response, request} = require('express');
 const bcryptjs = require('bcryptjs');
 const { User } = require('../models/userData');
 const {generatorjwt} = require('../helpers/generator-jwt');
+const { verify } = require('../helpers/googleVerify');
 
 
 
@@ -36,7 +37,7 @@ const Userlogin = async (req = request, res = response) =>{
             token});
 
     } catch (error) {
-        res.status(400).json({error: "invalid"});
+        res.status(400).json({error: "invalid - something went wrong"});
     }
 
 
@@ -44,8 +45,30 @@ const Userlogin = async (req = request, res = response) =>{
 
 };
 
+const googleSingIn = async (req = request, res = response) =>{
+
+    const {id_token} = req.body;
+
+    try {
+        const {given_name, email, img} = await verify(id_token);
+        res.json({
+            message: "Correct response",
+            given_name,
+            email,
+            img
+        });
+        
+    } catch (error) {
+        res.status(400).json({error: 'token not valid', error});
+    }
+
+    
+
+};
+
 
 
 module.exports = {
-    Userlogin
+    Userlogin,
+    googleSingIn
 };

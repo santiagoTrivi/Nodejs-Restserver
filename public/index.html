@@ -4,39 +4,83 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forbidden access</title>
+    <title>login</title>
 </head>
+
+      <div id="g_id_onload"
+         data-client_id="406818936459-gittbk32nbkubl5mgn7ttdjnbae3jvhj.apps.googleusercontent.com"
+         data-auto_prompt="false"
+         data-callback="handleCredentialResponse">
+      </div>
+      <div class="g_id_signin"
+         data-type="standard"
+         data-size="large"
+         data-theme="outline"
+         data-text="sign_in_with"
+         data-shape="rectangular"
+         data-logo_alignment="left">
+      </div>
+
+      <button id="google_signout"> Signout</button>
+
+
+      <script src="https://accounts.google.com/gsi/client" async defer></script>
+      <script>
+        function handleCredentialResponse(response) {
+           
+            //google token - id_toke
+            //console.log('id_toke: ', response.credential);
+            const body = {id_token: response.credential};
+            fetch('http://localhost:8081/api/auth/google', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            }).then(resp => resp.json()).then(resp =>{
+                console.log(resp)
+                localStorage.setItem('email', resp.usuario.correo);
+            }).catch(console.warn);
+      
+           
+        }
+        
+        const button = document.getElementById('google_signout');
+        button.onclick = () => {
+
+            console.log(google.accounts.id)
+            google.accounts.id.disableAutoSelect()
+            
+        }
+        
+      </script>
+
+
+      
+
 <body>
-    <h1>   Forbidden access </h1>
-    <div class="inner">
+    <h1>login</h1>
 
-        <h2>Contact Me</h2>
-
-        <form action="/api/users" method="post">
-
-            <div class="field half first">
-                <label for="name">Name</label>
-                <input name="name" id="name" type="text" placeholder="Name">
-            </div>
-            <div class="field half">
-                <label for="email">Email</label>
-                <input name="email" id="email" type="email" placeholder="Email">
-            </div>
-            <ul class="actions">
-                <li><input value="Send Message" class="button alt" type="submit"></li>
-            </ul>
-        </form>
-
-        <ul class="icons">
-            <li><a href="#" class="icon round fa-twitter"><span class="label">Twitter</span></a></li>
-            <li><a href="#" class="icon round fa-facebook"><span class="label">Facebook</span></a></li>
-            <li><a href="#" class="icon round fa-instagram"><span class="label">Instagram</span></a></li>
-        </ul>
-
-        <div class="copyright">
-            &copy; Untitled. Design: <a href="https://templated.co">TEMPLATED</a>. Images: <a href="https://unsplash.com">Unsplash</a>.
-        </div>
-
-    </div>
+    <form action="/api/auth/login" method="POST">
+        <fieldset>
+          <h3>Login</h3>
+          <label>Email</label>
+          <input type ="email" id = 'email' name="email" required>
+          <br><br>
+          <label>Password</label>
+          <input type="password" id = "password" name="password" required>
+          <br><br>
+          <button type ="reset">Reset</button>
+          <button type ="submit">Submit</button>
+        </fieldset>
+      </form>
+    
 </body>
+            <script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/skel.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
 </html>

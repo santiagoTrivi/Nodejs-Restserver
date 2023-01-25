@@ -1,6 +1,8 @@
+const bodyParser = require('body-parser');
 const express = require('express');
 const hbs = require('hbs');
 const {database} = require('../db/orm_connection');
+const cors = require('cors');
 
 
 class Server{
@@ -10,6 +12,12 @@ class Server{
         this.port = process.env.PORT;
         this.userRouters = '/api/users'; // main endpoint that sets the routes for each methods user (get, post, patch, put and delete) which is used in the middlaware
         this.authPath = '/api/auth'; // second endpoint that sets the login function in the api
+
+        this.path = {
+            userRouters: '/api/users',
+            authPath: '/api/auth',
+            category: '/api/category'
+        }
 
         // database connection
         this.Connection();
@@ -38,11 +46,15 @@ class Server{
         this.app.use(express.json());
 
         // dirrectorio publico
-        //this.app.use(express.static('public'));
+        this.app.use(express.static('public'));
 
         //
         //this.app.set('view engine', 'hbs');
 
+        // body-parser
+        this.app.use(bodyParser.urlencoded({ extended: true }));
+
+        this.app.use(cors());
 
     }
 
@@ -50,8 +62,9 @@ class Server{
 
 
         // middelaware to requess the routes created in the folder routes
-        this.app.use(this.userRouters, require('../routes/user_routes'));
-        this.app.use(this.authPath, require('../routes/auth_routes'));
+        this.app.use(this.path.userRouters, require('../routes/user_routes'));
+        this.app.use(this.path.authPath, require('../routes/auth_routes'));
+        this.app.use(this.path.category, require('../routes/category_routes'));
 
     }
 
