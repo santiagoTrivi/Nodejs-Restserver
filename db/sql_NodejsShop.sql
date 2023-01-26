@@ -5,6 +5,8 @@ USE sql_NodejsShop;
 CREATE TABLE `rols`(
     `rolID` INT NOT NULL auto_increment,
     `rol` VARCHAR(50) NOT NULL,
+    `createdAt` TIMESTAMP(5),
+    `updatedAt` TIMESTAMP(5),   
     UNIQUE INDEX `rol_uniquex` (`rol` ASC) VISIBLE,
     PRIMARY KEY(`rolID`)
 );
@@ -18,16 +20,21 @@ CREATE TABLE `users`(
     `google` BOOLEAN DEFAULT false,
     `img` VARCHAR(500),
     `status` BOOLEAN DEFAULT true,
+    `createdAt` TIMESTAMP(5),
+    `updatedAt` TIMESTAMP(5),    
     UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE,
 	UNIQUE INDEX `password_UNIQUE` (`password` ASC) VISIBLE,
     CONSTRAINT `rol_id` FOREIGN KEY (`rol_id`) REFERENCES `rols`(`rolID`),
     PRIMARY KEY(`userID`));
     
 CREATE TABLE `categories`(
-	`categoryID` INT NOT NULL auto_increment,
+	`id` INT NOT NULL auto_increment,
 	`categoryName` VARCHAR(50),
 	`userID` INT,
-	CONSTRAINT `userID` FOREIGN KEY (`userID`) REFERENCES `users`(`userID`),
+    `status` TINYINT DEFAULT 1,
+    `createdAt` TIMESTAMP(5),
+    `updatedAt` TIMESTAMP(5),
+	CONSTRAINT `userID` FOREIGN KEY (`userID`) REFERENCES `users`(`id`),
     PRIMARY KEY(`categoryID`)
 );
 
