@@ -1,6 +1,7 @@
 const {DataTypes} = require('sequelize');
 const {database} = require('../db/orm_connection');
 
+
 const User = database.define('User', {
     
     name: {

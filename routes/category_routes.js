@@ -1,7 +1,6 @@
 const {Router} = require('express'); 
 const { getCategory, postCategory, getCategoryByPk, deleteCategory } = require('../controllers/category_controllers');
-const { validationjwt } = require('../middlewares/validationjwt');
-const { validationRolJwt } = require('../middlewares/validationRolJwt');
+const { validationjwt, validationRolJwt } = require('../middlewares');
 
 
 const router = Router();

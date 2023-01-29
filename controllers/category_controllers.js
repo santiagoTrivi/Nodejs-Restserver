@@ -1,10 +1,11 @@
 const { request, response } = require("express");
-const {Category} = require('../models/categoryData');
+const {Category, User} = require('../models');
 
 
 const getCategory = async(req = request, res = response) => {
+    const {limit = 5} = req.query;
     try {
-        const categories = await Category.findAll({where: {status: 1}});
+        const categories = await Category.findAll({where: {status: 1}, limit: Number(limit), include: User });
         const total = await Category.count({where: {status: 1}});
         res.json({
             messange: 'correct response', 
@@ -39,13 +40,13 @@ const getCategoryByPk = async (req = request, res = response) => {
 };
 
 const postCategory = async (req = request, res = response) => {
-    const categoryName = req.body.name;
+    const category = req.body.name;
     const admin = req.authUser;
     const userID = admin.id;
 
     try {
 
-        const newCategory = new Category({categoryName, userID});
+        const newCategory = new Category({category, userID});
         await newCategory.save();
         res.json({newCategory});
 

@@ -1,5 +1,6 @@
 const {DataTypes} = require('sequelize');
 const {database} = require('../db/orm_connection');
+const { User } = require('./userData');
 
 const Category = database.define('Category',{
     id: {
@@ -7,7 +8,7 @@ const Category = database.define('Category',{
         require: false,
         primaryKey: true
     },
-    categoryName: {
+    category: {
         type: DataTypes.STRING
     },
     userID: {
@@ -15,8 +16,23 @@ const Category = database.define('Category',{
     },
     status: {
         type: DataTypes.TINYINT
+    },
+    /** 
+    
+    
+
+    userId: {
+        type: DataTypes.UUID,
+        references: {
+            model: 'User',
+            key: 'id'
+        }
     }
+    */
 });
+
+User.hasOne(Category);
+Category.belongsTo(User);
 
 module.exports = {
     Category

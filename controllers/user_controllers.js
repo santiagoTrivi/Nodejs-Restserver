@@ -1,12 +1,12 @@
 const {response, request} = require('express');
 const bcryptjs = require('bcryptjs');
-const {User, Rol} = require('../models/userData');
+const {User, Rol} = require('../models');
 //const bodyparser = require('body-parser');
 
 
 const userGet = async (req = request, res = response)=>{
     const {limit = 5} = req.query;
-    const users = await User.findAll({ where: { status: 1 } });
+    const users = await User.findAll({ where: { status: 1 }, limit: Number(limit) });
     const total = await User.count({ where: { status: 1 } });
     res.json( {total, users});
     //res.render('index');
