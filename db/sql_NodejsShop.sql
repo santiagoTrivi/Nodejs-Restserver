@@ -29,7 +29,7 @@ CREATE TABLE `users`(
     
 CREATE TABLE `categories`(
 	`id` INT NOT NULL auto_increment,
-	`categoryName` VARCHAR(50),
+	`category` VARCHAR(50),
 	`userId` INT,
     `status` TINYINT DEFAULT 1,
     `createdAt` TIMESTAMP(5),
@@ -40,15 +40,15 @@ CREATE TABLE `categories`(
 
 CREATE TABLE `products`(
 	`id` INT NOT NULL auto_increment,
-	`producName` VARCHAR(50),
-    `unitPrice` INT,
-    `available` BOOLEAN,
-	`userId` INT,
-    `categoryId` INT,
+	`product` VARCHAR(50),
+    `unitPrice` FLOAT,
     `description` VARCHAR(300),
+    `available` TINYINT(1) DEFAULT 1,
+	`idUser` INT,
+    `categoryId` INT,
     `createdAt` TIMESTAMP(5),
     `updatedAt` TIMESTAMP(5), 
-	CONSTRAINT `userId` FOREIGN KEY (`userId`) REFERENCES `users`(`id`),
+	CONSTRAINT `idUser` FOREIGN KEY (`idUser`) REFERENCES `users`(`id`),
     CONSTRAINT `categoryId` FOREIGN KEY (`categoryId`) REFERENCES `categories`(`id`),
     PRIMARY KEY(`id`)
 );
