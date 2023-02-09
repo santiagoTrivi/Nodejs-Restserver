@@ -5,15 +5,19 @@ const { User } = require("../models/userData");
 
 const validationjwt= async (req = request, res = response, next) => {
 
-    const token = req.header('Authorization');
-    if(!token){
-        return res.status(401).json({error: "no authentication"});
-    }
+    
 
     try {
 
+        const token = req.header('Authorization');
+        if(!token){
+            return res.status(401).json({error: "no authentication"});
+        }
+        
         const { uid } = await jwt.verify(token, process.env.SECRETKEY);
+        
         const authUser = await User.findByPk(uid);
+
         // validate if the authUser is null or not using return
         
         if(!authUser.dataValues){
@@ -32,10 +36,12 @@ const validationjwt= async (req = request, res = response, next) => {
         next();
         
     } catch (error) {
+        console.log(error);
         res.status(401).json({error: "token not valid"});
     }
 
-    next();
+    
+    
 
 };
 

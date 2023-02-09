@@ -6,11 +6,12 @@ const jwt = require("jsonwebtoken");
 const validationSellerRolKwt= async (req = request, res = response, next) => {
 
     auth = req.authUser.dataValues;
-    if(auth.rol_id !== 3){
+
+    if(auth.rolId !== 3){
         res.status(401).json({errror: "the user is not  Seller. only the seller users can do this action"});
     }
 
-
+    next();
 };
 
 module.exports = {

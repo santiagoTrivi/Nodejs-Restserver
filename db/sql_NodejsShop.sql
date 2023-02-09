@@ -44,11 +44,11 @@ CREATE TABLE `products`(
     `unitPrice` FLOAT,
     `description` VARCHAR(300),
     `available` TINYINT(1) DEFAULT 1,
-	`idUser` INT,
+	`UserId` INT,
     `categoryId` INT,
     `createdAt` TIMESTAMP(5),
     `updatedAt` TIMESTAMP(5), 
-	CONSTRAINT `idUser` FOREIGN KEY (`idUser`) REFERENCES `users`(`id`),
+	CONSTRAINT `UserId` FOREIGN KEY (`UserId`) REFERENCES `users`(`id`),
     CONSTRAINT `categoryId` FOREIGN KEY (`categoryId`) REFERENCES `categories`(`id`),
     PRIMARY KEY(`id`)
 );

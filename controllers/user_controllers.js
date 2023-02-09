@@ -22,13 +22,13 @@ const userGetBYId = async (req = request, res = response)=>{
 const userPost = async (req = request, res = response)=>{
     let {name, email, password, rol} = req.body;
     const rl = await Rol.findOne({ where: { rol} });
-    const rol_id = rl.id;
+    const rolId= rl.id;
     
     const salt = bcryptjs.genSaltSync(10);
     password = bcryptjs.hashSync(password, salt);
   
     try {
-        const user = new User({name, email, password, rol_id});
+        const user = new User({name, email, password, rolId});
         await user.save();
         res.json({user});
     } catch (error) {

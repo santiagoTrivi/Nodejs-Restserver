@@ -56,6 +56,7 @@ const postCategory = async (req = request, res = response) => {
     }
 
     
+    
 };
 
 const deleteCategory = async (req = request, res = response) => {

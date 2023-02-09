@@ -13,7 +13,7 @@ const User = database.define('User', {
     password: {
         type: DataTypes.STRING
     },
-    rol_id: {
+    rolId: {
         type: DataTypes.INTEGER
     },
     status: {
