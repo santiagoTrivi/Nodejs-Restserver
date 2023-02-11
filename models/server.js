@@ -3,6 +3,7 @@ const express = require('express');
 const hbs = require('hbs');
 const {database} = require('../db/orm_connection');
 const cors = require('cors');
+const  fileUpload  = require('express-fileupload');
 
 
 class Server{
@@ -18,7 +19,8 @@ class Server{
             authPath: '/api/auth',
             category: '/api/category',
             product: '/api/product',
-            search: '/api/search'
+            search: '/api/search',
+            upload: '/api/upload'
         }
 
         // database connection
@@ -31,7 +33,7 @@ class Server{
         this.routes();
     }
 
-    // method to create the connection to the database in mysql
+    // method to create the connection to the database in mysql using sequelize
     async Connection(){
          try {
             await database.authenticate();
@@ -58,6 +60,11 @@ class Server{
 
         this.app.use(cors());
 
+        this.app.use(fileUpload({
+            useTempFiles : true,
+            tempFileDir : '/tmp/'
+        }));
+
     }
 
     routes(){
@@ -69,6 +76,7 @@ class Server{
         this.app.use(this.path.category, require('../routes/category_routes'));
         this.app.use(this.path.product, require('../routes/product_routes'));
         this.app.use(this.path.search, require('../routes/search_routes'));
+        this.app.use(this.path.upload, require('../routes/upload_routes'));
 
     }
 

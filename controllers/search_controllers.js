@@ -1,7 +1,7 @@
 const { request, response } = require("express");
 const {Op} = require("sequelize");
 const { database } = require("../db/orm_connection");
-const { User, Category } = require("../models");
+const { User, Category, Product } = require("../models");
 
 
 const searchUser = async (term = '', res = response) =>{
@@ -25,7 +25,7 @@ const searchUser = async (term = '', res = response) =>{
             ]
         }});
         res.json({
-            result: users
+            result: (users) ? [users] : []
         });
     } catch (error) {
         res.status(500).json(error);
@@ -34,7 +34,6 @@ const searchUser = async (term = '', res = response) =>{
 
 const searchCategory = async (term = '', res = response) =>{
     
-    // where:{$or: [{name: {$iLike: {$in: term}}}, {email: {$iLike: {$in: term}}} ]}
     
     try {
         const categories = await Category.findAll({where:{
@@ -51,7 +50,7 @@ const searchCategory = async (term = '', res = response) =>{
                     status: 1
                 }
             ]
-        }});
+        }, include: User});
         res.json({
             result: categories
         });
@@ -60,6 +59,35 @@ const searchCategory = async (term = '', res = response) =>{
     }
 };
 
+const searchProduct = async (term = '', res = response) =>{
+    
+    
+    try {
+        const products = await Product.findAll({where:{
+            [Op.or]:[
+                {
+                    product: {[Op.substring]: term}
+                },
+                {
+                    unitPrice: {[Op.substring]: term}
+                },
+                {
+                    description: {[Op.substring]: term}
+                }
+            ],
+            [Op.and]:[
+                {
+                    available: 1
+                }
+            ]
+        }, include: [{model: User}, {model: Category}]});
+        res.json({
+            result: products
+        });
+    } catch (error) {
+        res.status(500).json(error);
+    }
+};
 
 
 const getSearch = async (req = request, res = response) =>{
@@ -77,6 +105,7 @@ const getSearch = async (req = request, res = response) =>{
     break;
 
     case 'product':
+        searchProduct(term, res);
     break; 
     
     default:
