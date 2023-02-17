@@ -28,6 +28,9 @@ const Product = database.define('Product',{
             model: 'Category',
             key: 'id'
         }
+    },
+    img: {
+        type: DataTypes.STRING
     }
    
 });

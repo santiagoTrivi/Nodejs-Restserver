@@ -16,6 +16,9 @@ const User = database.define('User', {
     rolId: {
         type: DataTypes.INTEGER
     },
+    img: {
+        type: DataTypes.STRING
+    },
     status: {
         type: DataTypes.TINYINT
     }

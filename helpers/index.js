@@ -1,11 +1,12 @@
 const {generatorjwt} = require('./generator-jwt');
 const {verify} = require('./googleVerify');
 const {uploadFiles} = require('./upload-files');
-
+const {allowedCollections} = require('./check-collection');
 
 
 module.exports = {
     generatorjwt,
     verify,
-    uploadFiles
+    uploadFiles,
+    allowedCollections
 };

@@ -1,44 +1,67 @@
 const { request, response } = require("express");
-const { uuid } = require('uuidv4');
-const path = require('path');
+const { uploadFiles } = require("../helpers");
+const { User } = require("../models/userData");
+const { Product } = require("../models/productData");
 
+const uploadfile = async (req = request, res = response) =>{
 
-const uploadfile = (req = request, res = response) =>{
-
-    let {arch} = req.files;
-    const splitname = arch.name.split('.');
-    const extension = splitname[ splitname.length - 1];
-
-    const validextension = ['png', 'jpg', 'jpeg', 'gif'];
-
-    if(!validextension.includes(extension)){
-        return res.status(400).json({
-            message: 'ERROR: invalid format'
-        });
-    };
-    
-   
-    let uploadPath;
-    
-    if (!req.files || Object.keys(req.files).length === 0 || !req.files.arch) {
-        return res.status(400).json({message: 'No files were uploaded.'});
-    }
-    
-    // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
-    const newFileName = uuid() + '.' + extension;
-    uploadPath = path.join(__dirname , '../uploads/' , newFileName);
-    
-    // Use the mv() method to place the file somewhere on your server
-    arch.mv(uploadPath, (err) => {
-        if (err)
-        return res.status(500).json({err});
+    try {
+        //const pathFile = await uploadFiles(req.files, ['txt', 'md'], 'texts');
+        const fileName = await uploadFiles(req.files, undefined, 'imgs');
+        res.json({
+            fileName
+        })
         
-        res.json({message: 'File uploaded!' + uploadPath});
-    });
-    
-    
+    } catch (error) {
+        res.status(400).json({
+            message: 'error',
+            error
+        });
+    }
 };
 
+const imgUpdate = async (req = request, res = response) =>{
+
+    const {collection, id} = req.params;
+    let modelo;
+
+    switch (collection) {
+        case 'user':
+            modelo = await User.findByPk(id);
+
+            if(!modelo){
+                return res.status(400).json({message: `the users ${id} does not exist`});
+            }
+
+            break;
+        case 'product':
+            modelo = await Product.findByPk(id);
+
+            if(!modelo){
+                return res.status(400).json({message: `the product ${id} does not exist`});
+            }
+
+            break;
+        
+        default:
+            return res.status(500).json({message: 'part not developed'})
+ 
+            
+    }
+    
+    const fileName = await uploadFiles(req.files, undefined, collection);
+    modelo.img = fileName;
+    modelo.save();
+
+    res.json({
+        modelo
+    })
+};
+
+
+
+
 module.exports = {
-    uploadfile
+    uploadfile,
+    imgUpdate
 };
